@@ -1,2 +1,6 @@
 ﻿  Lab_6.cpp
-  Lab_6.vcxproj -> C:\Users\Namxobick\source\repos\Lab_6\Debug\Lab_6.exe
+Y:\Хламъ\MyVector\Lab_6\MyVector.h(174,23): warning C4018: <: несоответствие типов со знаком и без знака
+Y:\Хламъ\MyVector\Lab_6\MyVector.h(169): message : во время компиляции функции-члена класс шаблон "MyVector<double> MyVector<double>::operator +(const MyVector<double> &) const"
+Y:\Хламъ\MyVector\Lab_6\Position.h(59): message : выполняется компиляция ссылки на экземпляр шаблон функции "MyVector<double> MyVector<double>::operator +(const MyVector<double> &) const"
+Y:\Хламъ\MyVector\Lab_6\Lab_6.cpp(11): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "MyVector<double>"
+  Lab_6.vcxproj -> Y:\Хламъ\MyVector\Lab_6\Debug\Lab_6.exe

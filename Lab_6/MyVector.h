@@ -4,12 +4,13 @@
 #include <assert.h>
 
 # define PI 3.14159265358979323846 
+# define Enter '\n'
 
 template<class T>
 
 class MyVector
 {
-private:
+protected:
 	size_t _maxSize, _size;
 	T* _array;
 
@@ -20,7 +21,6 @@ private:
 
 	template<class T1>
 	friend std::istream& operator >> (std::istream& in, MyVector<T1>& vector);
-
 
 public:
 	MyVector();
@@ -38,6 +38,7 @@ public:
 	MyVector<T>operator+(const MyVector<T>& vector) const;
 	MyVector<T>operator-(const MyVector<T>& vector) const;
 	MyVector<T> operator* (const MyVector<T>& vector) const;
+	MyVector<T> operator* (const T& vector) const;
 	MyVector<T>& operator=(const MyVector<T>& vector);
 
 	template<class T1>
@@ -53,7 +54,8 @@ public:
 	}
 
 	T DotProduct(const MyVector<T>& vector) const;
-	double VectorLength() const;
+	double GetMagnitude() const;
+	MyVector<T> GetNormalized() const;
 	double Angle(const MyVector<T>& vector) const;
 };
 
@@ -105,7 +107,6 @@ inline MyVector<T>::MyVector(std::initializer_list<T> array)
 
 	for (auto element : array)
 		this->Add(element);
-
 }
 
 template<class T>
@@ -127,6 +128,7 @@ inline MyVector<T>::MyVector(const MyVector<T>& vector)
 	_size = vector._size;
 	_maxSize = vector._maxSize;
 	_array = new T[_maxSize];
+
 	for (size_t i = 0; i < _size; i++)
 	{
 		_array[i] = vector._array[i];
@@ -190,24 +192,26 @@ inline MyVector<T> MyVector<T>::operator+(const MyVector<T>& vector) const
 template<class T>
 inline MyVector<T> MyVector<T>::operator-(const MyVector<T>& vector) const
 {
-
 	MyVector<T> difference;
 
-	int size = std::min(_size, vector._size);
+	if (_size > vector._size)
+	{
+		for (size_t i = 0; i < _size - vector._size; i++)
+		{
+			vector.Add(0);
+		}
+	}
+	else
+	{
+		for (size_t i = 0; i < vector._size - _size; i++)
+		{
+			Add(0);
+		}
+	}
 
-	for (size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < _size; i++)
 	{
 		difference.Add(_array[i] - vector._array[i]);
-	}
-
-	for (size_t i = size; i < _size; i++)
-	{
-		difference.Add(_array[i]);
-	}
-
-	for (size_t i = size; i < vector._size; i++)
-	{
-		difference.Add(-vector._array[i]);
 	}
 
 	return difference;
@@ -217,7 +221,7 @@ template<class T>
 inline MyVector<T> MyVector<T>::operator*(const MyVector<T>& vector) const
 {
 	MyVector<T> product;
-	int size = std::min(_size, vector._size);
+	size_t size = std::min(_size, vector._size);
 	if (_size != vector._size)
 		std::cout << "Vectors of different lengths. The resulting vector has a minimum size (size = " << size << ")" << std::endl;
 
@@ -225,6 +229,19 @@ inline MyVector<T> MyVector<T>::operator*(const MyVector<T>& vector) const
 	for (size_t i = 0; i < size; i++)
 	{
 		product.Add(vector._array[i] * _array[i]);
+	}
+
+	return product;
+}
+
+template<class T>
+inline MyVector<T> MyVector<T>::operator*(const T& vector) const
+{
+	MyVector<T> product;
+
+	for (size_t i = 0; i < _size; i++)
+	{
+		product.Add(_array[i] * vector);
 	}
 
 	return product;
@@ -264,7 +281,7 @@ inline std::istream& operator>>(std::istream& in, MyVector<T1>& complex)
 	{
 		in >> element;
 		complex.Add(element);
-	} while (in && in.get() != '\n');
+	} while (in && in.get() != Enter);
 
 	return in;
 }
@@ -287,7 +304,7 @@ inline T MyVector<T>::DotProduct(const MyVector<T>& vector) const
 }
 
 template<class T>
-inline double MyVector<T>::VectorLength() const
+inline double MyVector<T>::GetMagnitude() const
 {
 	double result = 0;
 
@@ -300,9 +317,21 @@ inline double MyVector<T>::VectorLength() const
 }
 
 template<class T>
+inline MyVector<T> MyVector<T>::GetNormalized() const
+{
+	MyVector<T> normalized;
+	double magnitude = GetMagnitude();
+	for (size_t i = 0; i < _size; i++)
+	{
+		normalized.Add(_array[i] / magnitude);
+	}
+	return normalized;
+}
+
+template<class T>
 inline double MyVector<T>::Angle(const MyVector<T>& vector) const
 {
-	double cosAngle = this->DotProduct(vector) / (this->VectorLength() * vector.VectorLength());
+	double cosAngle = this->DotProduct(vector) / (this->GetMagnitude() * vector.GetMagnitude());
 
 	return acos(cosAngle) * 180 / PI;
 }
