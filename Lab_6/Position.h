@@ -13,7 +13,7 @@ public:
 	Position(T element1, T element2, T element3 = 0) : MyVector<T>({ element1, element2, element3 }) {};
 	Position(const Position<T>& position) : MyVector<T>(position) {};
 	Position(const MyVector<T>& vector) : MyVector<T>(vector) {};
-
+	~Position() { std::cout << "POS" << std::endl; };
 	void Set(T element1, T element2, T element3 = 0)
 	{
 		this->_array[0] = element1;

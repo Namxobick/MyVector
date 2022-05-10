@@ -29,7 +29,7 @@ public:
 	MyVector(std::initializer_list<T> array);
 	MyVector(T* array, size_t size);
 	MyVector(const MyVector<T>& vector);
-	~MyVector();
+	virtual ~MyVector();
 
 	void Add(T object);
 	size_t Size() const;
@@ -138,8 +138,10 @@ inline MyVector<T>::MyVector(const MyVector<T>& vector)
 template<class T>
 inline MyVector<T>::~MyVector()
 {
-	delete [] _array;
+	delete[] _array;
+	std::cout << "VEC" << std::endl;
 }
+
 
 template<class T>
 inline void MyVector<T>::Add(T object)
